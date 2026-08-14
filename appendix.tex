@@ -1,0 +1,235 @@
+\section{Measure-valued weighted Caro--Wei}\label{app:upper}
+
+We prove Lemma~\ref{lem:measure-cw} without requiring a jointly measurable family of independent
+random clocks on an uncountable domain.
+
+\begin{proof}[Proof of Lemma~\ref{lem:measure-cw}]
+The claim is invariant to scaling $\mu$, so suppose first that $\mu$ is a probability measure.
+Draw $Z_1,\ldots,Z_k$ independently from $\mu$. Construct a finite undirected graph on indices
+$[k]$ by joining $i\ne j$ when $Z_i=Z_j$ or $Z_i$ and $Z_j$ are adjacent in $H$. Any independent
+set of indices maps injectively to an independent set in $H$, so this sampled graph has independence
+number at most $\alpha(H)$.
+
+The ordinary Caro--Wei inequality applied conditionally on the sampled graph gives
+\[
+ \sum_{i=1}^k\frac{1}{1+d_i}\le\alpha(H),
+\]
+where $d_i$ is the degree of index $i$. Given $Z_i=x$, the closed-neighborhood count
+$1+d_i$ has distribution $1+Y$ for
+$Y\sim\operatorname{Bin}(k-1,p_x)$ and $p_x=\mu(N_H[x])$. Direct integration yields
+\[
+ \E\frac{1}{1+Y}
+ =\int_0^1(1-p_x+p_xt)^{k-1}dt
+ =\frac{1-(1-p_x)^k}{kp_x}.
+\]
+Taking expectation, summing the $k$ equal terms, and using measurability gives
+\[
+ \int f_k(p_x)\,d\mu(x)\le\alpha(H),\qquad
+ f_k(p)=\begin{cases}[1-(1-p)^k]/p,&p>0,\\ k,&p=0.\end{cases}
+\]
+The functions $f_k$ increase pointwise to $1/p$ for $p>0$ and to infinity for $p=0$. Monotone
+convergence therefore shows at once that the set $\{x:p_x=0\}$ is $\mu$-null and that the limiting
+integral is at most $\alpha(H)$. For a finite nonzero measure, normalize by its total mass. The zero
+measure is trivial.
+\end{proof}
+
+\begin{remark}
+For a finite atomic measure, an equivalent proof assigns an independent exponential clock of rate
+$\mu(x)$ to each positive-mass vertex. The set of vertices whose clock is smallest in its closed
+neighborhood is independent and has expected size equal to the left side of
+\eqref{eq:measure-cw}.
+\end{remark}
+
+\section{Directed lower bound}\label{app:directed}
+
+We give a complete proof of Theorem~\ref{thm:directed-lower}. It suffices to consider deterministic
+learners because independent learner randomness can be conditioned upon throughout.
+
+\subsection{Posterior variance and harmonic weights}
+
+Fix $q,m$ and set $s=\lceil m/q\rceil$, $n=qs$. Then $m\le n<m+q\le2m$ when $m\ge q$.
+Use the marginal family \eqref{eq:paired-marginal} with $\eta=1/2$ and put the uniform prior on its
+$n$ signs. Augment the observation by revealing the sign of a pair whenever either endpoint is
+sampled. This can only decrease the minimax risk.
+
+The total probability of every pair is $1/n$, independent of its sign. Thus the sequence of pair
+indices in the sample is i.i.d. uniform on $[n]$, independent of all signs. Conditional on these
+indices and the revealed signs, signs of unobserved pairs remain independent Rademachers.
+
+For chain $a$, index suffixes by their number $r\in[s]$ of pairs. Let $U_{a,r}$ be the number of
+unobserved pairs in that suffix. Equation~\eqref{eq:suffix-target} shows that its random part at
+the first vertex is
+\[
+ -\frac{\eta}{2r}\sum_{j\in M_{a,r}}\sigma_j,
+\]
+where $M_{a,r}$ is the missing set. Its posterior variance is $\eta^2U_{a,r}/(4r^2)$. Also
+$D_\sigma(u_{a,k})\ge(1-\eta)/(2n)$. Restricting the population loss to these first vertices proves
+the conditional variance lower bound \eqref{eq:posterior-v}.
+
+Let
+\[
+ w_t=\sum_{r=t}^s\frac1{r^2},\qquad
+ Z=\sum_{a=1}^q\sum_{t=1}^s w_t I_{a,t},
+\]
+where $I_{a,t}$ indicates that the pair $t$ places from the end of chain $a$ is missing. Exchanging
+the order of summation gives
+\begin{equation}
+ \sum_{a=1}^q\sum_{r=1}^s\frac{U_{a,r}}{r^2}=Z,
+ \qquad
+ \sum_{t=1}^s w_t=\sum_{r=1}^s\frac{r}{r^2}=H_s.
+ \label{eq:weight-identities}
+\end{equation}
+Furthermore $w_t\le t^{-2}+\int_t^\infty x^{-2}dx\le2/t$, hence
+$\sum_tw_t^2\le2\pi^2/3$.
+
+Every pair is absent with probability $p=(1-1/n)^m$. For $n\ge m\ge1$, $p\ge1/4$ except when
+$n=m=1$. For distinct pairs,
+\[
+ \E[I_iI_j]=(1-2/n)^m\le(1-1/n)^{2m}=p^2,
+\]
+so their covariance is nonpositive. Consequently
+\[
+ \E Z=q pH_s,
+ \qquad
+ \E Z^2\le(\E Z)^2+p q\sum_tw_t^2
+ \le(\E Z)^2+\frac{2\pi^2pq}{3}.
+\]
+Since $q\ge1$, $p\ge1/4$, and $H_s\ge1$, Paley--Zygmund implies
+\begin{equation}
+ \Pp\{Z\ge \E Z/2\}
+ \ge\frac{1}{4}\frac{(\E Z)^2}{\E Z^2}
+ \ge c_{\rm occ}
+ \label{eq:occupancy-pz}
+\end{equation}
+for a universal $c_{\rm occ}>0$. On this event,
+\begin{equation}
+ V\ge \frac{\eta^2(1-\eta)p}{16}\frac{H_s}{s}
+ \ge c\frac{H_s}{s}.
+ \label{eq:v-event}
+\end{equation}
+
+\subsection{A shifted Rademacher small-ball lemma}
+
+\begin{lemma}\label{lem:shifted-smallball}
+Let $\xi_1,\ldots,\xi_N$ be independent Rademachers, let $v_1,\ldots,v_N,b$ lie in a real
+Hilbert space, and put $Y=\sum_i\xi_iv_i$ and $Q=\|Y-b\|^2$. Then
+\[
+ \E Q^2\le3(\E Q)^2,
+ \qquad
+ \Pp\{Q\ge\E Q/2\}\ge1/12.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $v=\E\|Y\|^2=\sum_i\|v_i\|^2$ and $B=\|b\|^2$. The Hilbert-space fourth-moment
+inequality gives $\E\|Y\|^4\le3v^2$. One direct proof expands the fourth power: terms with an
+index of odd multiplicity vanish, while each surviving cross term is bounded by the corresponding
+product of squared norms. Also
+$\E\langle Y,b\rangle^2=\sum_i\langle v_i,b\rangle^2\le vB$.
+Symmetry makes all cubic terms vanish. Expanding $Q^2$ therefore gives
+\[
+ \E Q^2
+ =\E\|Y\|^4+B^2+4\E\langle Y,b\rangle^2+2Bv
+ \le3v^2+B^2+6Bv
+ \le3(v+B)^2.
+\]
+Since $\E Q=v+B$, the first claim follows. Paley--Zygmund applied to the nonnegative variable
+$Q$ with threshold $1/2$ gives the second.
+\end{proof}
+
+Condition on sample pair indices, revealed signs, and learner randomness. The vector of all target
+values at the first suffix vertices is an affine image of the missing independent signs. Define $Q$
+by weighting the squared errors on those vertices uniformly by the lower bound
+$(1-\eta)/(2n)$. The actual population error dominates $Q$, while
+$Q=\|A\xi-b\|^2$ in a fixed weighted Euclidean space. Its conditional expectation is at least the
+integrated posterior variance $V$. By
+Lemma~\ref{lem:shifted-smallball}, $Q\ge V/2$ with conditional probability at least $1/12$.
+Combining with \eqref{eq:occupancy-pz} and \eqref{eq:v-event} gives joint probability at least
+$c_{\rm occ}/12$ that
+\[
+ L_{D_\sigma}(h_S)\ge c\frac{H_s}{s}.
+\]
+This probability is averaged over the uniform sign prior. Hence some deterministic $\sigma$ has
+the same frequentist lower bound. Finally,
+$H_s/s\ge c\min\{1,(q/m)\log(1+m/q)\}$ because $s=\lceil m/q\rceil$. This proves
+Theorem~\ref{thm:directed-lower} except at $q=m=1$. At that endpoint, use the same two marginals
+on the first pair without revealing its sign. Their one-sample total variation is $\eta<1$, while
+their conditional averages differ by $\eta$. Le Cam's two-point argument gives a universal
+constant-probability constant-risk lower bound, which is the required right side of
+\eqref{eq:directed-lower} after changing constants.
+
+\subsection{Inverting the risk lower bound}
+
+For completeness, the condition
+$m<cq\log(1/\epsilon)/\epsilon$ with a sufficiently small universal $c$ implies
+$(q/m)\log(1+m/q)>c'\epsilon$ for all sufficiently small $\epsilon$. Bounded values of
+$\epsilon$ are absorbed by changing constants. Thus Theorem~\ref{thm:directed-lower} implies
+$\Omega(q\log(1/\epsilon)/\epsilon)$ constant-confidence sample complexity.
+
+\section{Undirected lower bound}\label{app:undirected-lower}
+
+We prove Theorem~\ref{thm:undirected-lower}. For the nontrivial regime $m\ge q$, fix
+$\eta=a\sqrt{q/m}\le1/2$ for a sufficiently small universal $a$. Put the uniform prior on
+$\sigma\in\{-1,+1\}^q$. Recall that the two endpoints of edge $i$ both have target
+$\theta_i=(1-\eta\sigma_i)/2$.
+
+For sign arrays differing only at coordinate $i$, the one-sample KL divergence is
+\begin{align*}
+ \KL(D_\sigma\|D_{\sigma^{(i)}})
+ &=\frac{\eta}{q}\log\frac{1+\eta}{1-\eta}
+ \le\frac{4\eta^2}{q}.
+\end{align*}
+Tensorization and Pinsker give
+\[
+ \TV(D_\sigma^m,D_{\sigma^{(i)}}^m)
+ \le\sqrt{2m\eta^2/q}\le \sqrt2a.
+\]
+Choose $a\le1/(4\sqrt2)$. Assouad's argument then shows that for every decoder
+$\widehat\sigma$,
+\begin{equation}
+ \E_{\sigma,S}d_H(\widehat\sigma,\sigma)\ge\frac{3q}{8}.
+ \label{eq:assouad}
+\end{equation}
+
+Given a predictor $h$, decode $\widehat\sigma_i=+1$ if the average of $h(u_i)$ and $h(v_i)$ is
+below $1/2$, and $-1$ otherwise. If this decoder errs, convexity gives
+\[
+ (h(u_i)-\theta_i)^2+(h(v_i)-\theta_i)^2\ge\frac{\eta^2}{2}.
+\]
+Every endpoint has mass at least $(1-\eta)/(2q)\ge1/(4q)$, so
+\begin{equation}
+ L_{D_\sigma}(h)\ge\frac{\eta^2}{8q}
+ d_H(\widehat\sigma,\sigma).
+ \label{eq:hamming-to-risk}
+\end{equation}
+Equations \eqref{eq:assouad}--\eqref{eq:hamming-to-risk} give Bayes expected risk at least
+$3\eta^2/64=\Omega(q/m)$.
+
+To obtain a probability statement, one may use a direct bounded-Hamming argument. Since
+$0\le d_H\le q$ and its mean is at least $3q/8$,
+\[
+ \Pp\{d_H\ge3q/16\}\ge
+ \frac{(3/8)-(3/16)}{1-(3/16)}=\frac3{13}.
+\]
+Together with \eqref{eq:hamming-to-risk}, the joint prior-and-sample probability of risk
+$\Omega(q/m)$ is at least $3/13$. Averaging selects one deterministic $\sigma$. If $m<q$, set
+$\eta$ to a small constant and apply the same proof to obtain constant risk, completing the stated
+$\min\{1,q/m\}$ form.
+
+\section{Auxiliary audits}
+
+The supplementary program implements the following independent checks.
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item It enumerates every sample-location sequence for small $(q,s,m)$ and confirms
+$\E V=pH_s/(4s)$ for the simpler uniform-label version of the chain calculation.
+\item It verifies $\sum_tw_t=H_s$ and the uniform square-sum bound through $s=999$.
+\item It enumerates all occupancy patterns induced by samples for small chains and checks the
+constant-probability threshold in \eqref{eq:occupancy-pz}.
+\item It enumerates Rademacher signs for random linear maps and shifts and checks
+$\E Q^2\le3(\E Q)^2$.
+\item It compares the weighted Caro--Wei sum with an exact exhaustive computation of the
+independence number on random undirected graphs up to eight vertices and weights spanning six
+orders of magnitude.
+\item It exhausts the actual paired marginals and verifies their normalization, suffix targets,
+posterior-variance identity, and the neighboring KL formula used in the edge lower bound.
+\end{enumerate}
